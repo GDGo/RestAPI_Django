@@ -1,6 +1,45 @@
 from django.db import models
 
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+
+
+class UserProfileManager(BaseUserManager):
+    """Manager for User profiles
+    Переопределение менеджера требуется для того, чтобы Django знала как создавать пользователей и
+    суперпользователей на основе нашего собственного класса UserProfile, который имеет кастомное поле
+    email, являющееся полем username.
+
+    В стандратной реализации класса для пользователй в качестве username выступает
+    поле с таким же названием username
+    """
+
+    def create_user(self, email, name, password=None):
+        """Create a new User profile
+        Пароль опционален, но при если он не будет указываться при создании пользователя,
+        то он не сможет аутентифицироваться, это необходимо например когда требуется сменить
+        пароль при первом входе
+        """
+        if not email:
+            raise ValueError('User must have an email address')
+
+        email = self.normalize_email(email)
+        """По Умолчанию self.model ссылается на модель для которой этот менеджер предназначен
+        т.е. на модель UserProfile и тем самы создается новый экземпляр модели UserProfile и в него ппередаются
+        параметры email=email, naem=name"""
+        user = self.model(email=email, naem=name)
+        user.set_password(password)
+        user.save(using=self._db)
+
+        return user
+
+    def create_superuser(self, email, name, password):
+        """Create and save a new superuser"""
+        user = self.create_user(email, name, password)
+        user.is_superuser = True
+        user.is_staff = True
+        user.save(using=self._db)
+
+        return user
 
 
 class UserProfile(AbstractBaseUser, PermissionsMixin):
