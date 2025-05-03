@@ -9,13 +9,13 @@ class UserProfileManager(BaseUserManager):
     суперпользователей на основе нашего собственного класса UserProfile, который имеет кастомное поле
     email, являющееся полем username.
 
-    В стандратной реализации класса для пользователй в качестве username выступает
+    В стандартной реализации класса для пользователй в качестве username выступает
     поле с таким же названием username
     """
 
     def create_user(self, email, name, password=None):
         """Create a new User profile
-        Пароль опционален, но при если он не будет указываться при создании пользователя,
+        Пароль опционален, но если он не будет указываться при создании пользователя,
         то он не сможет аутентифицироваться, это необходимо например когда требуется сменить
         пароль при первом входе
         """
@@ -24,9 +24,9 @@ class UserProfileManager(BaseUserManager):
 
         email = self.normalize_email(email)
         """По Умолчанию self.model ссылается на модель для которой этот менеджер предназначен
-        т.е. на модель UserProfile и тем самы создается новый экземпляр модели UserProfile и в него ппередаются
-        параметры email=email, naem=name"""
-        user = self.model(email=email, naem=name)
+        т.е. на модель UserProfile и тем самы создается новый экземпляр модели UserProfile и в него 
+        передаются параметры email=email, naem=name"""
+        user = self.model(email=email, name=name)
         user.set_password(password)
         user.save(using=self._db)
 
