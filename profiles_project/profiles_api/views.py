@@ -16,7 +16,9 @@ class HelloApiView(APIView):
         если не указано, то используется тип формат, который
         пришел в запросе"""
         an_apiview = [
-            ''
+            '1',
+            '2',
+            '3'
         ]
 
         return Response({'message': 'Hello', 'an_apiview': an_apiview})
